@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.novles.system.code.CodeMapper">
+  	<select id="findAll" resultType="code">
+  		select
+  			seqno
+  			, parent_key
+  			, key
+  			, value
+  			, label
+  		from CODE
+  	</select>
+  	
+  	<select id="findByKey" parameterType="string" resultType="code">
+  		select
+  			seqno
+  			, parent_key
+  			, key
+  			, value
+  			, label
+  			, sort
+  		from CODE
+  		where key = #{key}
+  	</select>
+  	
+  	<select id="findByCode" parameterType="code" resultType="code">
+  		select
+  			seqno
+  			, parent_key
+  			, key
+  			, value
+  			, label
+  			, sort
+  		from CODE
+  		where parent_key = #{key}
+  	</select>
+  	
+  	<select id="findByFilter" parameterType="pageSearch" resultType="code">
+		SELECT * FROM ( 
+		    SELECT ROWNUM AS RNUM, Z.* FROM ( 
+		        SELECT * 
+		        FROM CODE 
+  				<where>
+				    <if test="param != null">
+					    <if test="param.parentKey != null">
+					    	AND PARENT_KEY = #{param.parentKey}          
+					    </if>  
+					    <if test="param.key != null">
+					    	AND KEY = #{param.key}          
+					    </if>  
+				    </if>
+				</where>
+		        <choose>
+	         		<when test="sortColumn != null and sortColumn !=''">
+	         			<choose>
+			              	<when test="sortColumn.equals('seqno')">
+			                ORDER BY SEQNO ${sortType}
+			             	</when>
+			              	<when test="sortColumn.equals('parentKey')">
+			                ORDER BY PARENT_KEY ${sortType}
+			              	</when>
+			              	<when test="sortColumn.equals('sort')">
+			                ORDER BY SORT ${sortType}
+			              	</when> 
+			              	<when test="sortColumn.equals('label')">
+			                ORDER BY LABEL ${sortType}
+			              	</when> 
+			              	<when test="sortColumn.equals('value')">
+			                ORDER BY VALUE ${sortType}
+			              	</when>   
+			              	<otherwise>
+			               	ORDER BY SEQNO DESC
+			           		</otherwise>
+			         	</choose>
+			         </when>
+			         <otherwise>
+			               	ORDER BY SEQNO DESC
+			         </otherwise>
+			    </choose>
+		    ) Z WHERE ROWNUM <![CDATA[ <= ]]> #{end}
+		)
+		WHERE RNUM > #{start}  		
+  	</select>
+  	
+  	<select id="findCountByFilter" parameterType="pageSearch" resultType="long">	
+		SELECT 
+        	count(1)
+        FROM CODE 
+		<where>
+		    <if test="param != null">
+			    <if test="param.parentKey != null">
+			    	AND PARENT_KEY = #{param.parentKey}          
+			    </if>  
+			    <if test="param.key != null">
+			    	AND KEY = #{param.key}          
+			    </if>  
+		    </if>
+		</where>
+  	</select>
+  	
+  	
+</mapper>

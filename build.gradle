@@ -1,0 +1,51 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.3.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.novles'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://code.lds.org/nexus/content/groups/main-repo"}
+	jcenter()
+}
+
+dependencies {
+	//Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+    compile 'io.jsonwebtoken:jjwt:0.9.0'
+    
+    //Web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    //DB
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.0'
+	compile 'com.oracle:ojdbc6:11.2.0.3'
+	
+	//GraphQL
+	compile 'io.leangen.graphql:graphql-spqr-spring-boot-starter:0.0.3'
+	
+	//Util
+	compile 'org.apache.commons:commons-lang3:3.8.1'
+	compile 'org.apache.commons:commons-text:1.6'
+	compile 'com.google.guava:guava:22.0'
+	compile 'com.google.code.gson:gson'
+	compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
